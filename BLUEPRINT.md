@@ -18,6 +18,7 @@ This document serves as the "Source of Truth" for the architectural patterns of 
 - **Lifecycle**: 
     - `init()`: Create element and bind events.
     - `render(state)`: Update the visual representation.
+- **Form Fields**: Always add a unique `id` or `name` attribute to form field elements (e.g., `<input>`, `<textarea>`) to enable browser autofill and improve accessibility. Use descriptive names based on their purpose.
 
 ## 4. Coding Style
 - Use ES6 Modules.
