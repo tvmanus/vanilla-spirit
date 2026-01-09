@@ -7,7 +7,7 @@ export function InteractionModule(state, onAction) {
     container.setAttribute('data-component', 'interaction-module');
     
     container.innerHTML = `
-        <input type="text" data-ref="display" readonly value="${state.text || ''}" />
+        <input type="text" data-ref="display" readonly name="text" value="${state.text || ''}" />
         <button data-ref="trigger">Hold Me</button>
     `;
 
