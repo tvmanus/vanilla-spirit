@@ -1,4 +1,17 @@
-# VanillaSpirit Blueprint
+# VanillaSpirit Blueprint (Legacy)
+
+> ⚠️ **DEPRECATED**: This file has been superseded by the structured blueprints in `.github/blueprints/`.
+>
+> Please refer to:
+> - [Architecture](.github/blueprints/architecture.md) - Core principles
+> - [Coding Standards](.github/blueprints/coding-standards.md) - Style guide
+> - [Component Structure](.github/blueprints/patterns/component-structure.md) - Component patterns
+> - [State Management](.github/blueprints/patterns/state-management.md) - Store patterns
+> - [Demo App](.github/blueprints/apps/demo-app.md) - Application specification
+
+---
+
+*The content below is preserved for historical reference.*
 
 This document serves as the "Source of Truth" for the architectural patterns of this project. Every coding agent must adhere to these rules to ensure consistency without a framework.
 

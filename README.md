@@ -78,7 +78,8 @@ Use a GitHub Action for semantic validation:
 3. **Explore the Demo**: Hold the "Hold Me" button to see reactive state updates.
 
 4. **Contribute**:
-   - Read the [Blueprint](./BLUEPRINT.md) (legacy; migrate to `.github/blueprints`).
+   - Read the [Blueprints](.github/blueprints/README.md) for architectural rules.
+   - Follow [Component Structure](.github/blueprints/patterns/component-structure.md) for new components.
    - Add to `references/` for new patterns.
    - Propose Blueprint updates via PR.
 
@@ -93,7 +94,7 @@ Use a GitHub Action for semantic validation:
 - **Agent Portability**: Blueprints are LLM-readable Markdown/JS.
 
 ## Roadmap
-- Migrate to `.github/blueprints` structure.
+- ✅ Migrate to `.github/blueprints` structure.
 - Expand `references/` with more components (e.g., Router, Forms).
 - Implement Blueprint Linting Action.
 - Add end-to-end examples (e.g., a full app).
