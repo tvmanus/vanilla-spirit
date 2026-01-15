@@ -1,85 +1,212 @@
-# SDIR Concept Documentation
+# Self-Defining Intermediate Representation (SDIR)
 
 ## Overview
-This section provides an overview of the SDIR concept, highlighting its significance and applications in modern programming.
+
+SDIR (Self-Defining Intermediate Representation) is a meta-programming approach where architectural blueprints define their own syntax, semantics, and validation rules within themselves. Unlike fixed Domain-Specific Languages (DSLs) that require external compilers, SDIR blueprints are **self-interpreting documents** that bootstrap their own metalanguage.
 
 ## The Problem with Traditional DSLs
-Traditional Domain Specific Languages (DSLs) often struggle with limitations such as inflexibility, complexity, and maintenance challenges. This section delves into these issues in detail.
+
+Traditional approaches to formalizing architectural patterns suffer from rigidity:
+
+- **TypeScript/JSON Schema Problem**: Fixed grammar requires external tooling and creates another layer of formalism
+- **Framework Lock-in**: Pre-defined syntax limits evolution and adaptation
+- **AI Brittleness**: Static schemas are hard for LLMs to extend or reason about
+- **Maintenance Overhead**: Schema updates cascade through all dependent tools
 
 ## The SDIR Solution
-1. **Flexibility**: SDIR allows for easy modifications without a complete rewrite.
-2. **Simplicity**: Syntax designed to be intuitive and straightforward.
-3. **Integration**: Seamlessly integrates with existing systems.
-4. **Scalability**: Solutions grow with the project requirements.
-5. **Support**: Strong community backing and documentation.
+
+SDIR treats each blueprint as a **bootstrapped language definition** that:
+
+1. **Defines its own primitives** (syntax elements like `@rule`, `@pattern`, `@transform`)
+2. **Declares its own semantics** (what `MUST`, `SHOULD`, `ANTIPATTERN` mean)
+3. **Specifies composition rules** (how primitives combine and reference each other)
+4. **Remains human-readable** (Markdown-first, not machine-first)
+5. **Is AI-parseable** (structured enough for LLMs to extract and apply)
 
 ## Core Principles
-### Bootstrapping
-- **Code Example**: [Insert relevant code example here]
 
-### Self-Interpretation
-1. **Step 1**: Description of the first step.
-2. **Step 2**: Description of the second step.
-3. **Step 3**: Description of the third step.
-4. **Step 4**: Description of the fourth step.
+### 1. Bootstrapping
 
-### Evolutionary Compatibility
-1. **Point 1**: Description of the first point.
-2. **Point 2**: Description of the second point.
-3. **Point 3**: Description of the third point.
-4. **Point 4**: Description of the fourth point.
+Each blueprint starts with a `[METALANGUAGE]` section that defines how the rest of the document should be interpreted:
+
+```markdown
+## [METALANGUAGE]
+
+Define syntax:
+- `@rule(name)` := A constraint that must be satisfied
+- `@pattern(name)` := A code template with variable holes
+- `@constraint(name, condition)` := A logical assertion
+
+Define semantics:
+- `MUST` := Hard constraint (breaks build if violated)
+- `SHOULD` := Soft constraint (warning only)
+- `ANTIPATTERN` := Forbidden code pattern
+```
+
+### 2. Self-Interpretation
+
+Unlike external DSLs, SDIR blueprints carry their own interpretation logic. An AI agent or parser:
+
+1. Reads the `[METALANGUAGE]` section first
+2. Builds a context-specific grammar from those definitions
+3. Parses subsequent sections using that custom grammar
+4. No global schema required
+
+### 3. Evolutionary Compatibility
+
+Each blueprint can:
+
+- Define new primitives without breaking others
+- Extend existing primitives with new semantics
+- Import metalanguage definitions from other blueprints
+- Maintain backward compatibility (old blueprints keep their definitions intact)
 
 ## SDIR Structure
-### METALANGUAGE
-Description of the METALANGUAGE.
 
-### RULES
-Description of the RULES.
+A typical SDIR blueprint contains these sections:
 
-### PATTERNS
-Description of the PATTERNS.
+### [METALANGUAGE]
+Bootstraps the interpretation framework. Defines:
+- **Syntax**: What symbols and constructs exist (`@rule`, `@pattern`, etc.)
+- **Semantics**: What those constructs mean (`MUST`, `SHOULD`, etc.)
+- **Composition**: How constructs can combine or reference each other
 
-### TRANSFORMATIONS
-Description of the TRANSFORMATIONS.
+### [RULES]
+Declares constraints and requirements using the metalanguage:
+```markdown
+@rule(component-signature)
+  MUST: return value matches `{ element: HTMLElement, update: Function }`
+  ANTIPATTERN: `export default function() { ... }`
+```
 
-### VERIFICATIONS
-- **Example**: [Insert relevant example here]
+### [PATTERNS]
+Defines code templates with variable substitution:
+```markdown
+@pattern(component-factory)
+```javascript
+export function {ComponentName}(state, onAction) {
+  // @inject(component-body)
+  return { element, update };
+}
+```
+```
+### [TRANSFORMATIONS]
+Specifies code refactoring and migration rules:
+```markdown
+@transform(from: "state.{prop} = {value}", to: "setState({ {prop}: {value} })")
+```
 
-## Comparison Table
-| Criterion | SDIR         | Traditional DSL | 
-|-----------|--------------|----------------| 
-| Flexibility | High       | Low           | 
-| Simplicity  | High       | Medium        | 
-| ...         | ...        | ...           | 
+### [VERIFICATION]
+Declares how to validate code against the blueprint:
+```markdown
+Check: All functions match @pattern(component-factory)
+Check: No code matches any ANTIPATTERN
+```
+
+## Comparison to Other Approaches
+
+| Approach | Extensibility | Readability | Tooling Required | AI-Friendly |
+|----------|--------------|-------------|------------------|-------------|
+| **YAML/JSON DSL** | Low (schema changes) | Low (machine-first) | High (parsers, validators) | Medium |
+| **TypeScript** | Medium (type system limits) | Medium | High (compiler) | Low |
+| **Free-form Markdown** | High | High | None | High (but no validation) |
+| **SDIR** | **High** | **High** | **Low** (self-interpreting) | **High** |
 
 ## Benefits for Vanilla Spirit
-### Benefit 1
-Description of benefit 1.
-### Benefit 2
-Description of benefit 2.
-### Benefit 3
-Description of benefit 3.
-### Benefit 4
-Description of benefit 4.
-### Benefit 5
-Description of benefit 5.
+
+### 1. True Meta-Programming
+Blueprints become executable IR that can generate, validate, and refactor code—not just document it.
+
+### 2. Zero External Dependencies
+No separate DSL compiler, schema validator, or type checker needed. The blueprint is the specification AND the validator.
+
+### 3. AI-Native Design
+LLMs can:
+- Parse the metalanguage to understand blueprint structure
+- Generate code by filling pattern templates
+- Validate code against rules
+- Propose blueprint extensions in the same metalanguage
+
+### 4. Evolutionary Architecture
+New patterns can be added by:
+- Defining new primitives in `[METALANGUAGE]`
+- Adding new rules/patterns that use those primitives
+- No global schema updates or breaking changes
+
+### 5. Human-First, Machine-Readable
+Unlike DSLs that prioritize parsing, SDIR prioritizes human understanding while remaining structured enough for tools.
 
 ## Implementation Path
-1. **Phase 1**: Description of phase 1.
-2. **Phase 2**: Description of phase 2.
-3. **Phase 3**: Description of phase 3.
-4. **Phase 4**: Description of phase 4.
+
+### Phase 1: Prototype (1-2 blueprints)
+- Add `[METALANGUAGE]` sections to component-structure and state-management
+- Define core primitives: `@rule`, `@pattern`, `@antipattern`, `@transform`
+- Document semantics: `MUST`, `SHOULD`, `EXAMPLE`
+
+### Phase 2: Parser Development
+- Create `scripts/parse-sdir.js` to extract metalanguage definitions
+- Build dynamic grammar from metalanguage
+- Implement rule validation against code
+
+### Phase 3: AI Integration
+- Enhance `.github/copilot-instructions.md` with SDIR parsing instructions
+- Create GitHub Action for automated code generation from blueprints
+- Add PR validation using SDIR rules
+
+### Phase 4: Expansion
+- Convert remaining blueprints to SDIR format
+- Add advanced primitives (dependencies, lifecycle, transformations)
+- Build ecosystem of interoperable blueprints
 
 ## Example Use Cases
-1. **Code Generation**: Description of code generation use case.
-2. **Code Validation**: Description of code validation use case.
-3. **Code Migration**: Description of code migration use case.
+
+### Code Generation
+```
+Input: "Create a UserProfile component with name and email fields"
+Process:
+  1. Parse component-structure blueprint metalanguage
+  2. Extract @pattern(component-factory)
+  3. Fill template holes: {ComponentName} = "UserProfile"
+  4. Generate code matching the pattern
+  5. Validate against @rule(component-signature)
+```
+
+### Code Validation
+```
+Input: Pull request with new component code
+Process:
+  1. Parse relevant blueprints' [RULES] sections
+  2. Check code against each @rule
+  3. Detect any ANTIPATTERN matches
+  4. Report violations as PR comments
+```
+
+### Code Migration
+```
+Input: Legacy code using `state.value = x`
+Process:
+  1. Parse @transform rules from blueprint
+  2. Match pattern: "state.{prop} = {value}"
+  3. Apply transformation: "setState({ {prop}: {value} })"
+  4. Generate refactored code
+```
 
 ## Philosophical Alignment
-1. **Point 1**: Description of philosophical alignment.
-2. **Point 2**: Description of philosophical alignment.
-3. **Point 3**: Description of philosophical alignment.
-4. **Point 4**: Description of philosophical alignment.
 
-## See Also
-Links and references for further reading on SDIR and related concepts.
+SDIR embodies the core philosophy of Vanilla Spirit:
+
+- **Instruction-Driven Development**: Patterns enforced through documentation, not framework code
+- **Zero-Framework Freedom**: No external compiler or runtime required
+- **AI Portability**: LLMs can read, understand, and extend the metalanguage
+- **Explicit Over Magic**: All behavior is traceable and documented
+
+By making blueprints self-defining, we achieve true intermediate representation—not just documentation, but executable architecture that compiles itself.
+
+---
+
+**Status**: Experimental concept for evolution toward IR-style meta-programming
+
+**See Also**: 
+- `docs/SDIR-component-structure.md` - Example SDIR blueprint
+- `.github/blueprints/patterns/component-structure.md` - Original blueprint
+- `README.md` - Vanilla Spirit overview
